@@ -21,19 +21,19 @@
     
     //region Where Encryption Happens
     
-    encNatur[encNaturCtep++] = keyPoint; // KeyCed
+    encNaturc[encNaturCtep++] = keyPoint; // KeyCed
     while (decNaturCtep < decNaturLimit){
     
         //region Where Key# Is Encrypted
         noise = RandomNoise() % 256;
-        encNatur[encNaturCtep++] = (uint8_t)(noise - keyNaturc[keyPoint]); // Key#
+        encNaturc[encNaturCtep++] = (uint8_t)(noise - keyNaturc[keyPoint]); // Key#
         keyPoint = noise;
         keyNatur = keyNaturc[keyPoint];
         //endregion
         
         //region Where Byte# Is Encrypted
         decNatur = decNaturc[decNaturCtep++];
-        encNatur[encNaturCtep++] = (uint8_t)(decNatur - keyNatur); // Byte#
+        encNaturc[encNaturCtep++] = (uint8_t)(decNatur - keyNatur); // Byte#
         keyPoint = (uint8_t)(decNatur + keyNatur); // Key#+1 (#+1 is a subscript denoting the next key in sequence)
         //endregion
     }
@@ -44,7 +44,7 @@
     int32_t keyPoint = 0;
     decNaturCtep = 0;
     encNaturCtep = 0;
-    keyPoint = encNatur[encNaturCtep++]; // KeyCed
+    keyPoint = encNaturc[encNaturCtep++]; // KeyCed
     while (decNaturCtep < decNaturLimit){
     
         //region Where Key# Is Decrypted
