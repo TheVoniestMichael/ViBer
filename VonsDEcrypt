@@ -41,7 +41,6 @@
     
     //region Where Decryption Happens
     
-    int32_t keyPoint = 0;
     decNaturCtep = 0;
     encNaturCtep = 0;
     keyPoint = encNaturc[encNaturCtep++]; // KeyCed
