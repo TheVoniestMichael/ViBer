@@ -1,0 +1,101 @@
+    *Copy and Paste this into a text editor that supports //region syntax. This will make it easier to read. loool
+    **This is a random post that depicts a post quantum symmetric key encryption algorithm.
+    ***Posted this independently and in advance of the entire ViBer, for sooner real world attack attempts! ahaha
+    ****Very easy... Very effective... Check for yourself.
+    
+    
+    uint8_t keyNaturc[256]; // Assign Encryption Key Bytes Here
+    uint8_t keyPoint = RandomNoise() % 256; // This will be randomly initialized to KeyCed. But keyPoint is generally used to index keyNaturc for encryption keys.
+    uint8_t keyNatur;
+
+    uint8_t decNaturc[210]; // This is raw data to be encrypted. length is 210 rn. However, it could be any length...
+    uint32_t decNaturLimit = 210; // Again, this is the raw data length. And it could be any length.
+    uint32_t decNaturCtep = 0; // Used to iterate over decNaturc.
+    uint8_t decNatur;
+
+    uint8_t encNaturc[420]; // This is encrypted data to be decrypted. Could be any length that is = 2 * Length(decNaturc)
+    uint32_t encNaturLimit = 420; // Again, this is encrypted data length. 420 = 2 * Length(decNaturc) = 2 * 210
+    uint32_t encNaturCtep = 0; // Used to iterate over encNaturc.
+
+    uint8_t noise = 0; // To catch RandomNoise() generated.
+    
+    //region Where Encryption Happens
+    
+    encNatur[encNaturCtep++] = keyPoint; // KeyCed
+    while (decNaturCtep < decNaturLimit){
+    
+        //region Where Key# Is Encrypted
+        noise = RandomNoise() % 256;
+        encNatur[encNaturCtep++] = (uint8_t)(noise - keyNaturc[keyPoint]); // Key#
+        keyPoint = noise;
+        keyNatur = keyNaturc[keyPoint];
+        //endregion
+        
+        //region Where Byte# Is Encrypted
+        decNatur = decNaturc[decNaturCtep++];
+        encNatur[encNaturCtep++] = (uint8_t)(decNatur - keyNatur); // Byte#
+        keyPoint = (uint8_t)(decNatur + keyNatur); // Key#+1 (#+1 is a subscript denoting the next key in sequence)
+        //endregion
+    }
+    //endregion Where Encryption Happens
+    
+    //region Where Decryption Happens
+    
+    int32_t keyPoint = 0;
+    decNaturCtep = 0;
+    encNaturCtep = 0;
+    keyPoint = encNatur[encNaturCtep++]; // KeyCed
+    while (decNaturCtep < decNaturLimit){
+    
+        //region Where Key# Is Decrypted
+        keyPoint = (uint8_t)(encNaturc[encNaturCtep++] + keyNaturc[keyPoint]);
+        keyNatur = keyNaturc[keyPoint];
+        //endregion Where Key# Is Decrypted
+        
+        //region Where Byte# Is Decrypted
+        decNatur = (uint8_t)(encNaturc[encNaturCtep++] + keyNatur);
+        decNaturc[decNaturCtep++] = decNatur;
+        keyPoint = (uint8_t)(decNatur + keyNatur);
+        //endregion Where Byte# Is Decrypted
+    }
+    //endregion Where Decryption Happens
+
+    //region Algorithm Reasoning
+    /*
+        To decrypt a single unit of data, (i.e. a byte) we must know the key used to encrypt it.
+        To decrypt the key, we must know the key used to encrypt it.
+
+        Yes, both the data and the key are encrypted.
+        This means: encrypted data size = 1 + 2 * decrypted data size.
+        (The +1 is for the KeyCed. So we know where to begin decryption.)
+
+        The format is: [KeyCed,Key0,Byte0,Key1,Byte1,Key2,Byte2,....]
+        Where each Key is a POINTER to the actual key found in keyNaturc; All Key are encrypted except KeyCed. i.e. after Key is decrypted you will have pointer to the raw key. KeyCed is a non encrypted POINTER.
+        Where each Byte is the actual byte found in decNaturc; i.e. after each Byte is decrypted, you will have the raw data.
+
+        Here's an example of how encryption works in reverse:
+        We decrypt byte2 using key2.
+        But, we decrypt key2 using byte1 and key1.
+        We decrypt byte1 using key1.
+        But, we decrypt key1 using byte0 and key0.
+        We decrypt byte0 using key0.
+        But, But! we decrypt key0 using KeyCed.
+
+        Enhancements:
+        For maximum security, ensure the data to be encrypted is not known in size or natur.
+        i.e. Data encrypted using a key, should be unique to data encrypted using another key. Add noise somewhere to be mistaken as KeyN,ByteN.
+        Another thing, instead of using KeyCed as a pointer to the initial Key for decrypting Key0, you can use KeyCed as a ViB for flow control and compute the initial Key(s) creatively. ahaha
+
+        Security challenges:
+        Statistical methods will not work on breaking the algorithm if you use the recommended enhancements.
+        An attacker must guess all keys used in a sequence.
+        But because all byte possibilities are equally likely (assuming you use recommended enhancements), it will be impossible for an attacker to know what the real message is.
+        A brute force would have the same chance of figuring out what you did, as if they had a pen and paper and wrote the first thing that came to mind. ahahah
+
+        Security Essence:
+        In essence, the ultimate security of this algorithm is based on the data to be encrypted.
+        By simply using enhancements I described above, you are guaranteed security for personal systems.
+        But for enterprise grade systems where data is more repetitive, simple formatting tricks will guarantee security for all encrypted messages.
+        Right now, I see this as the foundation for a programmable post quantum symmetric key encryption algorithm.
+    */
+    //endregion Algorithm Reasoning
